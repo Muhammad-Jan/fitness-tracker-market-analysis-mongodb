@@ -65,7 +65,6 @@ Implement a MongoDB document database to centralize product data, enable flexibl
 - **Collection:** `fitness_trackers`  
 - **Document-based storage model (BSON)**
 
-``` create a collection
 use D597_Task_2
 db.createCollection("fitness_trackers")
 
