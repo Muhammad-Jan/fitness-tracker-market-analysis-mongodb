@@ -104,7 +104,6 @@ Business-driven queries implemented:
 
 **Indexes Applied:**
 
-``` Index Quries
 db.fitness_trackers.createIndex({ "Brand Name": 1 })
 db.fitness_trackers.createIndex({ "Rating (Out of 5)": -1 })
 
