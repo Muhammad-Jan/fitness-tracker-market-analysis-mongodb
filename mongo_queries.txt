@@ -1,0 +1,70 @@
+'Database'
+use D597_Task_2
+
+'Creating Collection'
+db.createCollection("fitness_trackers")
+
+'Average Rating by Brand'
+db.fitness_trackers.aggregate([
+  {
+    $addFields: {
+      rating_num: { $toDouble: "$Rating (Out of 5)" }
+    }
+  },
+  {
+    $group: {
+      _id: "$Brand Name",
+      average_rating: { $avg: "$rating_num" }
+    }
+  }
+])
+
+'Device Type Distribution'
+
+db.fitness_trackers.aggregate([
+  {
+    $group: {
+      _id: "$Device Type",
+      total_devices: { $sum: 1 }
+    }
+  }
+])
+
+'Devices with Battery Life ≥ 14 Days'
+
+db.fitness_trackers.find(
+  { "Average Battery Life (in days)": { $gte: 14 } },
+  {
+    "Brand Name": 1,
+    "Model Name": 1,
+    "Average Battery Life (in days)": 1,
+    _id: 0
+  }
+)
+
+'Before Indexing'
+
+db.fitness_trackers.aggregate([
+  {
+    $group: {
+      _id: "$Brand Name",
+      avg_rating: { $avg: "$Rating (Out of 5)" }
+    }
+  }
+]).explain("executionStats")
+
+
+'Applying Index'
+db.fitness_trackers.createIndex({ "Brand Name": 1 })
+db.fitness_trackers.createIndex({ "Rating (Out of 5)": -1 })
+
+'After Indexing'
+
+db.fitness_trackers.aggregate([
+  {
+    $group: {
+      _id: "$Brand Name",
+      avg_rating: { $avg: "$Rating (Out of 5)" }
+    }
+  }
+]).explain("executionStats")
